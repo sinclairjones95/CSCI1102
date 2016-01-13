@@ -1,0 +1,29 @@
+/*
+ CurveBall -- Subclass of Ball. The ball's radius changes as it moves
+ 
+ author: Richard Jones
+*/
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+
+public class BreathingBall extends Ball 
+  implements ActionListener{
+  
+    BreathingBall(int width, int height){
+      super(width, height);
+      
+    }
+    
+   public void move(){
+     super.move();
+      xvelocity -= yvelocity/curvature;
+      yvelocity += xvelocity/curvature;
+   }
+    
+    public void actionPerformed(ActionEvent e){
+      move();
+    }
+}

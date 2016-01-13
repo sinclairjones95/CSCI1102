@@ -1,0 +1,17 @@
+public class Number implements Token {
+   
+   int number;
+   
+   public Number(int number){
+      this.number = number;
+   }
+      
+   public boolean isNumber(){
+      return true;
+   }
+   
+   public boolean isOperator(){
+      return false;
+   }
+   
+}

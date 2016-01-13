@@ -1,0 +1,26 @@
+/*
+ ChangeBall -- Subclass of Ball. The ball either grows or shrinks geometrically in random colors periodically
+ author: Richard Jones
+*/
+
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+
+public class ChangeBall extends Ball 
+  implements ActionListener{
+  growth = 2*Math.random();
+    ChangeBall(int width, int height){
+      super(width, height);      
+    }
+    
+    public void move(){
+     super.move();    
+   }
+    
+    public void actionPerformed(ActionEvent e){
+      move();
+    }
+}

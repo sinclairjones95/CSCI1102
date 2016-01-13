@@ -1,0 +1,171 @@
+import java.util.*;
+import java.io.*;
+
+class HuffmanCode {
+
+    TreeNode root;
+    Map<Character,String> codeMap;
+    Map<Character,Double> freqMap;
+    
+    
+    class TreeNode implements Comparable<TreeNode> {
+      double freq;
+      char letter;
+      TreeNode left,right;
+
+      TreeNode(double freq,TreeNode left,TreeNode right){
+        this.freq = freq;
+        this.left = left;
+        this.right = right;
+      }
+
+      TreeNode(double freq){
+        this(freq,null,null);
+      }
+
+      TreeNode(char letter, double freq){
+        this.freq = freq;
+        this.letter = letter;
+        this.left = this.right = null;
+      }
+
+      public boolean isLeaf(){
+        return left==null && right==null;
+      }
+
+      public int compareTo(TreeNode other){
+        if(this.freq==other.freq){
+          return 0;
+        } 
+        else if(this.freq>other.freq){
+          return 1;
+        }
+        else {
+          return -1;
+        }
+      }
+    }
+
+   
+    HuffmanCode(Map<Character,Double> freqMap){
+      this.freqMap = freqMap;
+
+      PriorityQueue<TreeNode> priorityQueue = new PriorityQueue<TreeNode>();
+      for(Character x : freqMap.keySet()){
+        TreeNode treeNode = new TreeNode(x, freqMap.get(x));
+        priorityQueue.add(treeNode);
+      }
+      
+      while(priorityQueue.size()>1){
+        TreeNode n1 = priorityQueue.remove();      //takes the lowest freq
+        TreeNode n2 = priorityQueue.remove();      // takes new lowest freq
+        TreeNode treeNode = new TreeNode(n1.freq + n2.freq, n1, n2);    //creates new node with the sum of frequencies
+        priorityQueue.add(treeNode);
+      }
+      root = priorityQueue.remove();
+
+      codeMap = new TreeMap<Character,String>();
+      buildCodeMap(root, codeMap, "");
+    }
+
+     public void buildCodeMap(TreeNode node,Map<Character,String> codeMap, String code){
+      if(!node.isLeaf()){
+        buildCodeMap(node.left, codeMap, code + "0");   //concatinates 0 for going left and 1 for going right
+        buildCodeMap(node.right, codeMap, code + "1");
+      }
+      else {
+        codeMap.put(node.letter, code);               //returns string of 01s corresponding to each letter
+      }
+    }
+
+    
+    public Map<Character,String> getCodeMap(){
+      return codeMap;
+    }
+
+    public String encode(String plain){
+      StringBuffer code  = new StringBuffer();
+      for(int i=0; i<plain.length(); i++){
+        String charcode = ""+codeMap.get(String.valueOf(plain.charAt(i)));
+        if(charcode==null){
+          System.out.println("Character not found: "+plain.charAt(i));
+        }
+        else {
+          code.append(charcode);
+        }
+      }
+      return new String(code);
+    }
+
+    public String decode(String code){
+      StringBuffer text = new StringBuffer();
+      TreeNode p = root;
+      for(int k=0; k<code.length(); k++){
+        char bit = code.charAt(k);
+        if(bit=='0'){
+          p = p.left;
+        }
+        else {
+          p = p.right;
+        }
+        if(p.isLeaf()){
+          char nextchar = (char) (int) p.letter;
+          text.append(nextchar);
+          p = root;
+        }
+      }
+      return new String(text);
+    }
+
+    public double bitsperchar(){
+      double bpc = 0;
+      for(Character k : codeMap.keySet()){
+        bpc+=codeMap.get(k).length()*freqMap.get(k);
+      }
+      return bpc;
+    }
+
+    /*
+      The main method in this class reads in a frequency map
+      and builds a HuffmanCode from the map.  The input is 
+      read from a file specified on the command line, or 
+      (if no filename is not given) System.in.  The output
+      of the program is a display of the code map.
+    */
+    public static void main(String[] args){
+      Scanner scan=null;
+      try {
+        if(args.length>0){
+          scan = new Scanner(new File(args[0]));
+        }
+        else {
+          scan = new Scanner(System.in);
+        }
+      }
+      catch(IOException e){
+        System.out.println(e+args[0]);
+        System.exit(0);
+      }
+
+      Map<Character,Double> freqMap = new TreeMap<Character,Double>();
+      while(scan.hasNext()){
+        char s = (char) scan.nextInt();
+        double d = scan.nextDouble();
+        freqMap.put(s,d);
+      }
+
+      HuffmanCode code = new HuffmanCode(freqMap);
+      Map<Character,String> codeMap = code.getCodeMap();
+      for(Character key : codeMap.keySet()){
+        System.out.println(key+" "+((int)key)+" "+codeMap.get(key));
+      }
+  
+      System.out.println("Expected bits per character: "+code.bitsperchar());
+    }
+
+}
+
+
+
+
+

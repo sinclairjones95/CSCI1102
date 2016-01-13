@@ -1,0 +1,27 @@
+/*
+ RotateBall -- Subclass of Ball. The ball rotates 
+ author: Richard Jones
+*/
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+
+public class RotateBall extends Ball 
+  implements ActionListener{
+  
+    RotateBall(int width, int height){
+      super(width, height);
+      
+    }
+    
+    public void move(){
+     super.move();
+     
+   }
+    
+    public void actionPerformed(ActionEvent e){
+      move();
+    }
+}

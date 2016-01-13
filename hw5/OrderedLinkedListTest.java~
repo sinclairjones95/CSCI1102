@@ -1,0 +1,40 @@
+import junit.framework.TestCase;
+import java.util.*;
+
+/**
+ * A JUnit test case class.
+ * Every method starting with the word "test" will be called when running
+ * the test with JUnit.
+ */
+
+/*
+ * 
+ * Author Richard S. Jones
+ * 
+ */
+
+public class OrderedLinkedListTest extends TestCase {
+  
+  /**
+   * A test method.
+   * (Replace "X" with a name describing the test.  You may write as
+   * many "testSomething" methods in this class as you wish, and each
+   * one will be called when running JUnit over this class.)
+   */
+  public void testOrderedLinkedList() {
+    int iterate = 50; 
+    OrderedLinkedList<Double> list= new OrderedLinkedList<Double>();
+    ArrayList<Double> list2 = new ArrayList<Double>();
+    for (int i=0; i<iterate; i++){
+      double val = Math.random();
+      System.out.println(""+val);         //used for debugging purposes, to know what's being compared
+      list.add(val);
+      list2.add(val);
+    }
+    
+    Collections.sort(list2);
+    for (int j=0; j<iterate; j++){
+      assertEquals("Checking if the elements in Ordered list and arraylist are the same", list2.get(j), list.remove(0));
+    }
+  }
+}

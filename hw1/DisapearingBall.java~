@@ -1,0 +1,39 @@
+/*
+ BlinkBall -- Subclass of Ball. The ball dissapears periodically
+ author: Richard Jones
+*/
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+
+public class DisapearingBall extends Ball 
+  implements ActionListener{
+  
+    BlinkBall(int width, int height){
+      super(width, height);
+      
+    }
+    
+    public void move(){
+     super.move();
+     if (xvelocity<15) {
+       xvelocity += random();
+     }
+     else {
+       xvelocity = xvelocity*1.1
+     }
+     if (yvelocity<15){
+       yvelocity += random();
+     }
+     else{
+       yvelocty = yvelocity*1.1
+     }
+     
+   }
+    
+    public void actionPerformed(ActionEvent e){
+      move();
+    }
+}

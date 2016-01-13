@@ -1,0 +1,272 @@
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
+public class BinaryTree<E> {
+
+  protected E data;
+  protected BinaryTree<E> left,right;
+
+  BinaryTree(){
+    data = null;
+    left = right = null;
+  }
+
+  BinaryTree(E item){
+    data = item;
+    left = new BinaryTree<E>();
+    right = new BinaryTree<E>();
+  }
+
+  BinaryTree(E item, BinaryTree<E> left, BinaryTree<E> right)
+  {
+    data = item;
+    this.left = left;
+    this.right = right;
+  }
+
+  public E getData(){
+    return data;
+  }
+
+  public BinaryTree<E> getLeft(){
+    return left;
+  }
+
+  public BinaryTree<E> getRight(){
+    return right;
+  }
+
+  public void setData(E obj){
+    data=obj;
+  }
+
+  public void setLeft(BinaryTree<E> tree){
+      left = tree;
+  }
+
+  public void setRight(BinaryTree<E> tree){
+      right = tree;
+  }
+
+  public boolean isEmpty(){
+    return left == null;
+  }
+
+  public boolean isLeaf(){
+    return !isEmpty() && left.isEmpty() && right.isEmpty();
+  }
+
+  public int nodeCount(){
+     if(isEmpty())
+        return 0;
+     else
+        return 1 + left.nodeCount()+right.nodeCount();
+  }
+
+  public int leafCount(){
+    if(isEmpty()){
+      return 0;
+    }
+    else if(isLeaf()){
+     return 1;
+    }
+    else{
+      return left.leafCount() + right.leafCount();
+    }
+  }
+
+  public BinaryTree<E> mirrorImage(){
+    if (!isEmpty()){
+      BinaryTree<E> work= new BinaryTree<E>(data, right.mirrorImage(), left.mirrorImage()); //swaps the two branches
+      return work;
+    } else {
+      return new BinaryTree<E>();
+    }
+  }
+
+  public int height(){     //returns the height of the height of the longest branch
+    if(isEmpty()){ 
+      return -1;
+    } else if(isLeaf()){
+      return 0;
+    } else{
+      int leftH = left.height();
+      int rightH = right.height();
+      if (leftH>=rightH){          //to check which branch is longer
+        return 1 + leftH;
+      }else{
+        return 1 + rightH;
+      }
+    }
+  }
+
+  public int levelCount(int level){
+    if (level == 0){                   //counts when reaching level 0
+      if (!isEmpty()){
+        return 1;
+      } else {
+        return 0;
+      }
+    } else if (!left.isEmpty() && !right.isEmpty()){         //when none of the nodes are Empty and level>0
+      return left.levelCount(level - 1) + right.levelCount(level - 1);
+    } else if (left.isEmpty() && right.isEmpty()){           //when both of the nodes are Empty
+        return 0;
+    } else {                                              //one of the nodes is Empty
+      if (left.isEmpty()){            
+        return right.levelCount(level - 1);
+      } else {
+        return left.levelCount(level - 1);
+      }
+    }
+  }
+
+  public int weightBalanceFactor(){     // finds the difference in number of nodes in each side for each tree
+    if (!isEmpty()){  
+      return left.nodeCount() - right.nodeCount() + left.weightBalanceFactor() + right.weightBalanceFactor(); 
+    } else {
+      return 0;
+    }
+  }
+
+  public int nodeSum(){
+    if(!isEmpty()){
+      String datum = ""+data;
+      Integer num = Integer.parseInt(datum);
+      return num + left.nodeSum() + right.nodeSum();       //sums all the nodes
+    } else {
+      return 0;
+    }
+  }
+
+  public void doubles(){
+    if(!isEmpty()){
+      if(!isLeaf()){
+        String datum = ""+data;             //casting to a string
+        Integer num = Integer.parseInt(datum);    //casting to an integer
+        num = 2*num;
+        datum = ""+num;  
+        data = (E)datum;            //cast back to string and then to E.
+        left.doubles();
+        right.doubles();
+      } else {
+        String datum = ""+data;
+        Integer num = Integer.parseInt(datum);
+        num = 2*num;
+        datum = ""+num;  
+        data = (E)datum;
+      }
+    }
+  }
+
+  public int maxPathSum(){
+    if(!isEmpty()){
+      String datum = ""+data;
+      Integer num = Integer.parseInt(datum);
+      if (!left.isLeaf() && !right.isLeaf()){          //if neither is a leaf, needs to add the max path sum of either left or right
+        if (left.maxPathSum()>=right.maxPathSum()){
+           return num + left.maxPathSum();
+        } else{
+          return num + right.maxPathSum();
+        }
+      }
+      else if (left.isLeaf() && right.isLeaf()){       //if the to branches below are leafs, needs to take which ever is higher
+        String leftString = "" + getLeft().data;
+        Integer leftVal = Integer.parseInt(leftString);
+        String rightString = "" + getRight().data;
+        Integer rightVal = Integer.parseInt(rightString);
+        if (leftVal >= rightVal){
+          return num + leftVal;
+        } else {
+          return num + rightVal;
+        }
+      }
+      // only one of the branches is a leaf
+      else if (left.isLeaf()){                        // left is a leaf
+        String leftString = "" + getLeft().data;
+        Integer leftVal = Integer.parseInt(leftString);
+        if (leftVal>=right.maxPathSum()){
+          return num + leftVal;
+        } else {
+          return num + right.maxPathSum();
+        }
+      } else {                                       // right is a leaf
+        String rightString = "" + getRight().data;
+        Integer rightVal = Integer.parseInt(rightString);
+        if (rightVal>=left.maxPathSum()){
+          return num + rightVal;
+        } else {
+          return num + left.maxPathSum();
+        }
+      }
+      
+    } else{   //if empty returns 0;
+      return 0;
+    }
+  }
+
+  public String preOrder(){
+    if(!isEmpty()){
+      return (data + " " + left.preOrder() + " " + right.preOrder());
+    }
+    else{
+      return "";
+    }
+  }
+
+  public String inOrder(){
+    if(!isEmpty()){
+      return (left.inOrder() + " " + data + " " +right.inOrder());
+    }
+    else{
+      return "";
+    }
+  }
+
+  public String postOrder(){
+    if(!isEmpty()){
+      return (left.postOrder() + " " + right.postOrder() + " " + data);
+    }
+    else{
+      return "";
+    }
+  }
+
+  public String levelOrder(){     
+    Queue<BinaryTree<E>> queue = new LinkedList<BinaryTree<E>>();
+    String x= "";
+    if(!isEmpty()){
+        queue.add(this);
+        while (!queue.isEmpty()) {            //condition,
+          BinaryTree<E> work = queue.remove();
+          x = x + " " + work.data;    //dequeues and concatinates it to the string
+          BinaryTree<E> leftbranch = work.getLeft();
+          BinaryTree<E> rightbranch = work.getRight();
+          if (!(leftbranch.data==null)){         //only enques the values if they are not null
+            queue.add(leftbranch);
+          }
+          if (!(rightbranch.data==null)){
+            queue.add(rightbranch);
+          }         
+        }
+        return x;
+    } else {
+      return x;
+    }
+  }
+
+  public String toString( String indent ) {
+    if(isEmpty())
+      return "";
+    else
+      return right.toString( indent + "   " ) + "\n" +
+       indent + "/\n" +
+       indent + data + "\n" +
+       indent + "\\" +
+       left.toString( indent + "   ");
+  }
+
+  public String toString() {
+      return toString("");
+  }
+}

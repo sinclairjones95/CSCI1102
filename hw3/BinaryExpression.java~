@@ -1,0 +1,37 @@
+public class BinaryExpression implements Expression{
+  
+  Expression left;
+  Expression right;
+  Operator sign;
+  public BinaryExpression(Operator sign, Expression left, Expression right){
+    
+    this.left = left;
+    this.right = right;
+    this.sign = sign;
+    
+  }
+  
+  public int valueOf(){            //returns the value for the operation of the two numbers 
+      int result;
+      int resultleft = left.valueOf();
+      int resultright = left.valueOf();
+      result = sign.apply(resultleft, resultright);
+      return result;
+  }
+  
+  public String toPrefix(){          //prefix representation of the operation
+    return (left + " " + right + " " + sign);
+  }
+  
+  public String toPostfix(){         //postfix representation of the operation
+    return (sign + " " + left + " " + right);
+  }
+  
+  public String toInfix(){
+    return ("("+left+sign+right+")");
+  }
+  
+  public String toString(){      //calls the toPrefix function to return the same string
+    return toPrefix();
+  }
+}
